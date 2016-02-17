@@ -12,11 +12,12 @@ module CassSchema
   # @param [String] A string defining the options with which the keyspace should be created, e.g.:
   # "{ 'class' : 'SimpleStrategy', 'replication_factor' : 3 }"
   # @param [String] The name of the schema directory within the cass_schema directory, typically the same as the name.
+  # @param [String] Optional base directory to find the schema and migration files.
   # statements are separated by two new lines, and a statement cannot have two newlines inside of it
   # comments start with '#'
-  DataStore = Struct.new(:name, :cluster, :keyspace, :replication, :schema) do
+  DataStore = Struct.new(:name, :cluster, :keyspace, :replication, :schema, :schema_base_path) do
 
-    attr_reader :schema_base_path, :logger
+    attr_reader :logger
 
     # Creates a datastore object from a hash containing the required keys
     # @param [String] name of the data store
@@ -27,7 +28,7 @@ module CassSchema
     def self.build(name, hash)
       l = hash.with_indifferent_access
       schema = l[:schema] || name
-      new(name, l[:cluster], l[:keyspace], l[:replication], schema)
+      new(name, l[:cluster], l[:keyspace], l[:replication], schema, l[:schema_base_path])
     end
 
     # Creates the datastore
@@ -61,8 +62,16 @@ module CassSchema
 
     # Internal method used by Runner to pass state into the datastore
     def _setup(options = {})
-      @schema_base_path = options[:schema_base_path]
+      self.schema_base_path ||= options[:schema_base_path]
       @logger = options[:logger]
+    end
+
+    def schema_path
+      File.join(schema_base_path, schema, 'schema.cql')
+    end
+
+    def schema_base_path
+      self[:schema_base_path]
     end
 
     private
@@ -78,7 +87,7 @@ module CassSchema
     end
 
     def create_statements
-      StatementLoader.statements(schema_base_path, schema, 'schema.cql')
+      StatementLoader.statements(schema_path)
     end
 
     def migration_statements(migration_name)
