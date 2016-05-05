@@ -16,3 +16,5 @@ end
 task :console => [:setup] do
   Pry.start
 end
+
+task default: :test
