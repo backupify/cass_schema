@@ -7,13 +7,16 @@ module CassSchema
 
         # Parse the individual CQL statements as a list from the file. To do so:
         # - assume statements are separated by two new lines
-        # - strip comments and empty lines from each statement
+        # - strip comments (#,--,//) and empty lines from each statement
         # - remove statements that are empty
+        # - Note that /* multiline comments */ are not supported
         statements = file.split(/\n{2,}/).map do |statement|
           statement
             .split(/\n/)
             .select { |l| l !~ /^\s*#/ }
             .select { |l| l !~ /^\s*$/ }
+            .select { |l| l !~ /^\s*--.*$/ }
+            .select { |l| l !~ /^\s*\/\/.*$/ }
             .join("\n")
         end
 
