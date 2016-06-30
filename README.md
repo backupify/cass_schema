@@ -130,6 +130,7 @@ runner.create_all
 To deploy this gem you'll need RubyGems push privileges. Please contact [one of the owners](https://rubygems.org/gems/cass_schema) to be added.
 
 The deploy process works as such:
+
 1. Update `version.rb`. Use [semantic versioning](http://semver.org) to version this gem.
 2. Push new version file.
 3. `bundle exec rake release`
