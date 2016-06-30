@@ -117,7 +117,6 @@ runner = Runner.new(datastores: datastores, schema_base_path: 'my/base/path')
 runner.create_all
 ```
 
-
 ## Contributing
 
 1. Fork it ( https://github.com/backupify/cass_schema/fork )
@@ -125,3 +124,12 @@ runner.create_all
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+## Deploying
+
+To deploy this gem you'll need RubyGems push privileges. Please contact [one of the owners](https://rubygems.org/gems/cass_schema) to be added.
+
+The deploy process works as such:
+1. Update `version.rb`. Use [semantic versioning](http://semver.org) to version this gem.
+2. Push new version file.
+3. `bundle exec rake release`
